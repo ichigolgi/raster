@@ -1,5 +1,6 @@
 #pragma once
 #include "Texture.h"
+#include "Scene.h"
 
 class CEngine
 {
@@ -36,6 +37,8 @@ private:
 	//
 	void UpdateWindowRequest(UpdateContext& update_context);
 	//
+	void DrawModel(DrawContext& draw_context);
+	//
 	void DrawBackbuffer(DrawContext& draw_context);
 
 private:
@@ -44,4 +47,5 @@ private:
 	BITMAPINFO* m_pbitmapinfo{};
 	HWND m_hwnd;
 	bool m_is_initialized{ false };
+	CScene m_scene{};
 };

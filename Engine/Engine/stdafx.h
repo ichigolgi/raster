@@ -19,6 +19,11 @@
 
 
 // TODO: プログラムに必要な追加ヘッダーをここで参照してください
+#if 1
 #define SCREEN_SIZE_W 1280
 #define SCREEN_SIZE_H  760
-#define SCREEN_PIXELS SCREEN_SIZE_W*SCREEN_SIZE_H
+#else
+#define SCREEN_SIZE_W 40
+#define SCREEN_SIZE_H 40
+#endif
+#define SCREEN_PIXELS (SCREEN_SIZE_W*SCREEN_SIZE_H)

@@ -1,6 +1,15 @@
 #pragma once
 
 // ピクセルシェーダ
-class PixelShader
+class CPixelShader
 {
+public:
+	struct InPixelShader
+	{
+	};
+	struct OutPixelShader
+	{
+	};
+
+	void Run(const InPixelShader& in, OutPixelShader& out) {}
 };

@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include "Engine.h"
 #include <cassert>
+//
+#include "Scene.h"
+#include "VertexShader.h"
+#include "PixelShader.h"
+#include "Rasterizer.h"
+//
 
 namespace 
 {
@@ -8,7 +14,8 @@ namespace
 		BIT_NUM = 32, 
 		BYTE_NUM = BIT_NUM/8,
 	};
-	DWORD S_BIT_POOL[SCREEN_PIXELS * BYTE_NUM]{};
+	//	DWORD S_BIT_POOL[SCREEN_PIXELS * BYTE_NUM]{};
+	DWORD S_BIT_POOL[SCREEN_PIXELS]{};
 }
 
 //
@@ -20,6 +27,7 @@ void CEngine::Initialize(InitializeContext& initialize_context)
 {
 	m_hwnd = initialize_context.hwnd;
 
+	// TODO: ここら辺の処理をTextureの方に持っていく
 	int planes = 1;
 	int bits_per_pel = 8;
 #if 1
@@ -72,6 +80,9 @@ void CEngine::Update(UpdateContext& update_context)
 		return;
 	}
 
+	// モデル登録しなおし
+	m_scene.Clear();
+
 	// 画面更新リクエスト
 	UpdateWindowRequest(update_context);
 
@@ -79,17 +90,66 @@ void CEngine::Update(UpdateContext& update_context)
 	//BITMAP bitmap;
 	//GetObject(m_hbitmap, sizeof(BITMAP), &bitmap);
 	//GetObject(hbitmap, sizeof(BITMAP), &bitmap);
+	// TODO: ここら辺の処理をTextureの方に持っていく
+#if 1
 	for (int yi = 0; yi < SCREEN_SIZE_H; ++yi)
 	{
 		for (int xi = 0; xi < SCREEN_SIZE_W; ++xi)
 		{
 			auto pixel = m_backbuffer_texture.GetPixel(xi, yi);
-			//int dib_i = (xi + (SCREEN_SIZE_W - yi) * SCREEN_SIZE_W);
-			int dib_i = (xi + yi * SCREEN_SIZE_W);
-			S_BIT_POOL[dib_i] = RGB(pixel.b * 255.f, pixel.g * 255.f, pixel.r * 255.f);
+			//int dib_i = (xi + yi * SCREEN_SIZE_W); // 左上基準でいいの？？？
+			int dib_i = (xi + (SCREEN_SIZE_H - yi - 1) * SCREEN_SIZE_W); // 左下基準なのでyが逆
+			BYTE* color_byte = (BYTE*)(&S_BIT_POOL[dib_i]);
+			color_byte[0] = (BYTE)(pixel.b * 255.f); // B
+			color_byte[1] = (BYTE)(pixel.g * 255.f); // G
+			color_byte[2] = (BYTE)(pixel.r * 255.f); // R
+			color_byte[3] = 0; // -
+
 		}
 	}
-#if 0
+#elif 0
+	for (int i = 0; i < SCREEN_PIXELS; ++i)
+	{
+		S_BIT_POOL[i] = RGB(
+			255.f * ((float)i / SCREEN_PIXELS),
+			255.f * ((float)i / SCREEN_PIXELS),
+			255.f * ((float)i / SCREEN_PIXELS)
+		);//結果はなぜかBGRになってる
+	}
+#elif 1
+	for (int yi = 0; yi < SCREEN_SIZE_H; ++yi)
+	{
+		for (int xi = 0; xi < SCREEN_SIZE_W; ++xi)
+		{
+			auto pixel = m_backbuffer_texture.GetPixel(xi, yi);
+			int dib_i = (xi + (SCREEN_SIZE_H - yi - 1) * SCREEN_SIZE_W);
+			//int dib_i = (xi + yi * SCREEN_SIZE_W);
+			S_BIT_POOL[dib_i] = RGB(
+				0.f,//255.f * ((float)dib_i / SCREEN_PIXELS) // B
+				255.f * ((float)yi / SCREEN_SIZE_H), //G
+				255.f * ((float)xi / SCREEN_SIZE_W), //R
+				);//結果はなぜかBGRになってる
+		}
+	}
+#elif 1
+	for (int yi = 0; yi < SCREEN_SIZE_H; ++yi)
+	{
+		for (int xi = 0; xi < SCREEN_SIZE_W; ++xi)
+		{
+			//auto pixel = m_backbuffer_texture.GetPixel(xi, yi);
+			int dib_i = (xi + (SCREEN_SIZE_H - yi - 1) * SCREEN_SIZE_W);
+			//int dib_i = (xi + yi * SCREEN_SIZE_W);
+			BYTE* color_byte = (BYTE*)(&S_BIT_POOL[dib_i]);
+			float value_index = (float)dib_i / (float)(SCREEN_PIXELS);
+			float value_scaled = 255.f * value_index;
+			BYTE value = (BYTE)(value_scaled);
+			color_byte[0] = value; // B
+			color_byte[1] = value; // G
+			color_byte[2] = value; // R
+			color_byte[3] = 0; // -
+		}
+	}
+#else
 	for (auto& pool : S_BIT_POOL)
 	{
 		pool = RGB(0, 0, 255);//結果はなぜかBGRになってる
@@ -103,6 +163,9 @@ void CEngine::Draw(DrawContext& draw_context)
 	{
 		return;
 	}
+
+	// Sceneに登録されたモデルをバックバッファに描画する
+	DrawModel(draw_context);
 
 	// バックバッファテクスチャ描画
 	DrawBackbuffer(draw_context);
@@ -120,45 +183,36 @@ void CEngine::UpdateWindowRequest(UpdateContext& update_context)
 	UpdateWindow(m_hwnd);//再描画命令
 }
 
+void CEngine::DrawModel(DrawContext& draw_context)
+{
+	for (auto* mesh : m_scene.polygons)
+	{
+		CVertexShader vs;
+		CRasterizer raster;
+		CPixelShader ps;
+
+		// ポリゴンごとに処理
+		for ()
+		{
+			// 頂点シェーダを走らせる
+
+			// ラスタライザで実際に描画するピクセルを決定する
+
+			// 対象のピクセルに対してピクセルシェーダで色を付ける
+		}
+	}
+
+}
+
 void CEngine::DrawBackbuffer(DrawContext& draw_context)
 {
 	PAINTSTRUCT ps;
 	HDC hdc = BeginPaint(m_hwnd, &ps);
 
-	// テクスチャ描画
-#if 0
-// SetPixel だとくそおそいのでだめ
-	for (int xi = 0; xi < SCREEN_SIZE_W; ++xi)
-	{
-		for (int yi = 0; yi < SCREEN_SIZE_H; ++yi)
-		{
-			auto pixel = m_backbuffer_texture.GetPixel(xi, yi);
-			COLORREF color;
-			color = RGB((int)pixel.r * 255, (int)pixel.g * 255, (int)pixel.b * 255);
-			int x = xi;
-			int y = yi;
-			SetPixel(hdc, x, y, color);
-		}
-	}
-#else
 	HDC hdcMem = CreateCompatibleDC(hdc);
 	HGDIOBJ hOldObj = SelectObject(hdcMem, m_hbitmap);
 	
-	// Bit描画
-#if 0
-	int rop = 0;
-	BitBlt(
-		hdc,
-		0,
-		0,
-		SCREEN_SIZE_W,
-		SCREEN_SIZE_H,
-		hdcMem,
-		0,
-		0,
-		SRCCOPY
-	);
-#else
+	// DIBで作ったBitの描画
 	int ret = StretchDIBits(
 		hdc,
 		0,
@@ -175,10 +229,8 @@ void CEngine::DrawBackbuffer(DrawContext& draw_context)
 		SRCCOPY
 	);
 	assert(ret != GDI_ERROR);
-#endif
+
 	SelectObject(hdcMem, hOldObj); // 復帰
 	DeleteDC(hdcMem);
-#endif
-
 	EndPaint(m_hwnd, &ps);
 }
