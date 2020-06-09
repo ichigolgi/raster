@@ -25,6 +25,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
+    <Text Include="Todo.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -63,6 +64,9 @@
     <ClInclude Include="targetver.h">
       <Filter>Main</Filter>
     </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Engine\Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -93,6 +97,9 @@
       <Filter>Engine\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Rasterizer.cpp">
+      <Filter>Engine\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
       <Filter>Engine\Engine</Filter>
     </ClCompile>
   </ItemGroup>
