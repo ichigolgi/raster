@@ -7,11 +7,11 @@
  * 描画に必要なものを入れておくデータ
  */
 struct CScene {
-  // ポリゴンデータ
-  std::vector<PolygonMeshBase *> polygons;
+    // ポリゴンデータ
+    std::vector<PolygonMeshBase *> polygons;
 
-  //
+    //
 
-  // クリア関数
-  void Clear() { polygons.clear(); }
+    // クリア関数
+    void Clear() { polygons.clear(); }
 };

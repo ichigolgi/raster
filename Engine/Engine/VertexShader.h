@@ -2,9 +2,9 @@
 
 // 頂点シェーダ
 class CVertexShader {
-public:
-  struct InVertexShader {};
-  struct OutVertexShader {};
+   public:
+    struct InVertexShader {};
+    struct OutVertexShader {};
 
-  void Run(const InVertexShader &in, OutVertexShader &out) {}
+    void Run(const InVertexShader &in, OutVertexShader &out) {}
 };
