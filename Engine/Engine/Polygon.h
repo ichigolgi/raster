@@ -1,13 +1,21 @@
 #pragma once
 #include "Math.h"
 #include <vector>
-
-namespace Polygon {
+#include <tuple>
 
 /* ========================================================================= */
 // ポリゴン
 /* ========================================================================= */
-class PolygonBase {
+typedef math::Vector Vertex;
+typedef std::vector<Vertex> VertexSteam;
+typedef std::tuple<Vertex, Vertex, Vertex> Polygon;
+typedef std::tuple<Vertex&, Vertex&, Vertex&> PolygonRef;
+
+
+/* ========================================================================= */
+// ポリゴンメッシュベース
+/* ========================================================================= */
+class PolygonMeshBase {
 public:
   enum class VertexType {
     TRIANGLE_LIST,
@@ -17,13 +25,22 @@ public:
   typedef std::vector<Vertex> VertexSteam;
 
 public:
-  PolygonBase() {}
-  virtual ~PolygonBase(){};
+	PolygonMeshBase() {}
+  virtual ~PolygonMeshBase(){};
 
-  /* 頂点リスト取得 */
+  // アクセッサがより簡単になるように修正中
+  // それいかんによってはこの関数消すかも
+  //
+  // 頂点リスト取得
   // 継承したクラスたちは m_vertex_stream, m_vertex_type
   // を自分の好きなように生成する
-  const VertexSteam &GetVertexStream() { return m_vertex_stream; }
+  //const VertexSteam &GetVertexStream() { return m_vertex_stream; }
+
+  // ポリゴン数を得る
+  virtual int GetPolygonNum() = 0;
+
+  // ポリゴンを得る
+  virtual PolygonRef GetPolygon(int index) = 0;
 
 protected:
   // std::vector<int> m_index_stream{}; // インデクスリスト // イランノデハ？
@@ -32,35 +49,21 @@ protected:
 };
 
 /* ========================================================================= */
-// テストポリゴン
+// テストポリゴンメッシュ
 // サンプル的な存在…
 /* ========================================================================= */
-class TestPolygon : public PolygonBase {
+class TestPolygonMesh : public PolygonMeshBase {
 public:
-  typedef PolygonBase BaseType;
-
-private:
-  TestPolygon() {}
+  typedef PolygonMeshBase BaseType;
 
 public:
-  TestPolygon() {
-    m_vertex_type = VertexType::TRIANGLE_LIST;
 
-    Vertex v0, v1, v2;
-    v0.Set(10.f, 0.f, 0.f, 0.f);
-    v1.Set(0.f, 10.f, 0.f, 0.f);
-    v2.Set(-10.f, 0.f, 0.f, 0.f);
-    m_vertex_stream.emplace_back(v0);
-    m_vertex_stream.emplace_back(v1);
-    m_vertex_stream.emplace_back(v2);
-    v0.Set(-10.f, 0.f, 0.f, 0.f);
-    v1.Set(0.f, 10.f, 0.f, 0.f);
-    v2.Set(10.f, 0.f, 0.f, 0.f);
-    m_vertex_stream.emplace_back(v0);
-    m_vertex_stream.emplace_back(v1);
-    m_vertex_stream.emplace_back(v2);
-  }
-  virtual ~TestPolygon(){};
-}
+	TestPolygonMesh();
+  virtual ~TestPolygonMesh(){};
 
-} // namespace Polygon
+  // ポリゴン数を得る
+  int GetPolygonNum() override;
+
+  // ポリゴンを得る
+  PolygonRef GetPolygon(int index) override;
+};

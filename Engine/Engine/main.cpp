@@ -1,8 +1,7 @@
 // Engine.cpp : アプリケーションのエントリ ポイントを定義します。
 //
-
-#include "main.h"
 #include "stdafx.h"
+#include "main.h"
 //
 //
 #include "Engine.h"

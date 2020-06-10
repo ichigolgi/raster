@@ -1,5 +1,5 @@
-#include "Engine.h"
 #include "stdafx.h"
+#include "Engine.h"
 #include <cassert>
 //
 #include "PixelShader.h"
@@ -163,7 +163,8 @@ void CEngine::DrawModel(DrawContext &draw_context) {
     CRasterizer raster;
     CPixelShader ps;
 
-    // ポリゴンごとに処理
+#if 0 // underconstruction
+    // TODO: ポリゴンごとに処理
     for () {
       // 頂点シェーダを走らせる
 
@@ -171,6 +172,7 @@ void CEngine::DrawModel(DrawContext &draw_context) {
 
       // 対象のピクセルに対してピクセルシェーダで色を付ける
     }
+#endif
   }
 }
 
