@@ -1,6 +1,4 @@
 #pragma once
 
 // ラスタライザー
-class CRasterizer
-{
-};
+class CRasterizer {};
