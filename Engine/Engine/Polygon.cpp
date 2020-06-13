@@ -1,11 +1,13 @@
 #include "stdafx.h"
 #include "Polygon.h"
 
+namespace polygon {
+
 /* ========================================================================= */
 // テストポリゴンメッシュ
 // サンプル的な存在…
 /* ========================================================================= */
-TestPolygonMesh::TestPolygonMesh() {
+TestMesh::TestMesh() {
     m_vertex_type = VertexType::TRIANGLE_LIST;
 
     Vertex v0, v1, v2;
@@ -25,11 +27,14 @@ TestPolygonMesh::TestPolygonMesh() {
 }
 
 // ポリゴン数を得る
-int TestPolygonMesh::GetPolygonNum() { return m_vertex_stream.size() / 3; }
+int TestMesh::GetPolygonNum() { return (int)m_vertex_stream.size() / 3; }
 
 // ポリゴンを得る
-PolygonRef TestPolygonMesh::GetPolygon(int index) {
+PolygonRef TestMesh::GetPolygon(int index) {
     PolygonRef ref = {m_vertex_stream.at(index + 0),
                       m_vertex_stream.at(index + 1),
                       m_vertex_stream.at(index + 2)};
+    return ref;
 }
+
+}  // namespace polygon

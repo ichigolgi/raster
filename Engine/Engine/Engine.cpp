@@ -1,9 +1,9 @@
+#include "stdafx.h"
 #include "Engine.h"
 #include "PixelShader.h"
 #include "Rasterizer.h"
 #include "Scene.h"
 #include "VertexShader.h"
-#include "stdafx.h"
 #include <cassert>
 
 namespace {
@@ -19,7 +19,7 @@ DWORD S_BIT_POOL[SCREEN_PIXELS]{};
 // CEngine public method
 //
 
-void CEngine::Initialize(InitializeContext &initialize_context) {
+void CEngine::Initialize(CEngine::InitializeContext &initialize_context) {
     // TESTÇæÇÊ
     m_hwnd = initialize_context.hwnd;
 
@@ -27,7 +27,7 @@ void CEngine::Initialize(InitializeContext &initialize_context) {
     int planes = 1;
     int bits_per_pel = 8;
 #if 1
-    int color_num = pow(2, (int)BIT_NUM);
+    int color_num = (int)pow(2, (int)BIT_NUM);
     m_pbitmapinfo = (LPBITMAPINFO)HeapAlloc(
         GetProcessHeap(), HEAP_ZERO_MEMORY,
         sizeof(BITMAPINFO) + sizeof(RGBQUAD) * (color_num - 1));
@@ -166,9 +166,9 @@ void CEngine::UpdateWindowRequest(UpdateContext &update_context) {
 
 void CEngine::DrawModel(DrawContext &draw_context) {
     for (auto *mesh : m_scene.polygons) {
-        CVertexShader vs;
-        CRasterizer raster;
-        CPixelShader ps;
+        // CVertexShader vs;
+        // CRasterizer raster;
+        // CPixelShader ps;
 
 #if 0  // underconstruction
     // TODO: É|ÉäÉSÉìÇ≤Ç∆Ç…èàóù

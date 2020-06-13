@@ -3,6 +3,8 @@
 #include <vector>
 #include <tuple>
 
+namespace polygon {
+
 /* ========================================================================= */
 // ポリゴン
 /* ========================================================================= */
@@ -14,7 +16,7 @@ typedef std::tuple<Vertex&, Vertex&, Vertex&> PolygonRef;
 /* ========================================================================= */
 // ポリゴンメッシュベース
 /* ========================================================================= */
-class PolygonMeshBase {
+class MeshBase {
    public:
     enum class VertexType {
         TRIANGLE_LIST,
@@ -24,8 +26,8 @@ class PolygonMeshBase {
     typedef std::vector<Vertex> VertexSteam;
 
    public:
-    PolygonMeshBase() {}
-    virtual ~PolygonMeshBase(){};
+    MeshBase() {}
+    virtual ~MeshBase(){};
 
     // アクセッサがより簡単になるように修正中
     // それいかんによってはこの関数消すかも
@@ -51,13 +53,13 @@ class PolygonMeshBase {
 // テストポリゴンメッシュ
 // サンプル的な存在…
 /* ========================================================================= */
-class TestPolygonMesh : public PolygonMeshBase {
+class TestMesh : public MeshBase {
    public:
-    typedef PolygonMeshBase BaseType;
+    typedef MeshBase BaseType;
 
    public:
-    TestPolygonMesh();
-    virtual ~TestPolygonMesh(){};
+    TestMesh();
+    virtual ~TestMesh(){};
 
     // ポリゴン数を得る
     int GetPolygonNum() override;
@@ -65,3 +67,5 @@ class TestPolygonMesh : public PolygonMeshBase {
     // ポリゴンを得る
     PolygonRef GetPolygon(int index) override;
 };
+
+}  // namespace polygon

@@ -8,7 +8,7 @@
  */
 struct CScene {
     // ポリゴンデータ
-    std::vector<PolygonMeshBase *> polygons;
+    std::vector<polygon::MeshBase *> polygons;
 
     //
 
